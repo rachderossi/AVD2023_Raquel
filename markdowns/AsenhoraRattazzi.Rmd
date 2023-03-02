@@ -1,7 +1,7 @@
 ---
 title: "A senhora Rattazzi"
 author: "Camilo Castelo Branco"
-date: "2006"
+date: "1880"
 type: "Romance"
 output:
   prettydoc::html_pretty:

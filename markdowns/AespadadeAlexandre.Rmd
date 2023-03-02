@@ -1,7 +1,7 @@
 ---
 title: "A espada de Alexandre"
 author: "Camilo Castelo Branco"
-date: "2010"
+date: "1872"
 type: "Romance"
 output:
   prettydoc::html_pretty:
