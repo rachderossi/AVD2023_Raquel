@@ -3,10 +3,7 @@ title: "A senhora Rattazzi"
 author: "Camilo Castelo Branco"
 date: "1880"
 type: "Romance"
-output:
-  prettydoc::html_pretty:
-    theme: cayman
-    highlight: github
+output: html_document
 ---
 
 ## PREAMBULO
