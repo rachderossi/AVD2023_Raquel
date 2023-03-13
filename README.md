@@ -8,3 +8,7 @@
 ## 02/03
 - Atualizado o campo de data das obras em markdown.
 - Adicionado arquivo csv com a estrtura das duas obras escolhidas: A espada de Alexandre e A senhora Rattazzi.
+
+## 13/03
+- Procurei as obras que não constavam na lista de obras e encontrei versões no Gutemberg e no Open Library.
+- Anexei o link na coluna de notas do sheets.
