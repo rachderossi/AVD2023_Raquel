@@ -17,3 +17,4 @@
 - Utilizei o comando **linguakit tagger pt -nec Camilo-Amor_de_Perdicao.txt > Camilo-Amor_de_Perdicao.tag** para fazer a leitura do documento de interesse (Camilo-Amor_de_Perdicao.txt)e faz a classificação de cada palavra do texto e salva a saída em um novo documento (Camilo-Amor_de_Perdicao.tag).
 - Após utilizei o comando **grep NP Camilo-Amor_de_Perdicao.tag | sort | uniq -c | sort -n > NP_resultados.csv** que faz a busca (utilizando o grep) de todas as entidades (NP) no arquivo Camilo-Amor_de_Perdica.tag, as ordena (sort) em ordem crescente e salva a saída em um novo documento (NP_resultados.csv).
 - Por fim, utilizando o Google sheets, dividi o texto em colunas e usei como separador os espaços em branco conseguindo assim deixar o resultado final em 4 colunas.
+- Criei um barplot dos 10 locais com maior frequência na base de dados. Adicionando também a frequência realtiva (%).
