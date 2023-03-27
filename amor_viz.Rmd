@@ -1,0 +1,133 @@
+---
+title: "amor_viz"
+author: "Raquel Rossi"
+date: "2023-03-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+```
+
+- NP00SP0  -> Person
+- NP00G00  -> Geographical location
+- NP00O00  -> Organization
+- NP00V00  -> Others
+                       
+```{r}
+
+NP_resultados <- read_excel("NP_resultados.xlsx")
+
+# substituição das palavras para os grupos corretos
+
+NP_resultados$grupo[NP_resultados$texto =='Mariana'] <- 'NP00SP0'
+NP_resultados$grupo[NP_resultados$texto =='Constança'] <- 'NP00SP0'
+NP_resultados$grupo[NP_resultados$texto =='Teresa'] <- 'NP00SP0'
+NP_resultados$grupo[NP_resultados$texto =='—'] <- 'NP00V00'
+NP_resultados$grupo[NP_resultados$texto =='É'] <- 'NP00V00'
+NP_resultados$grupo[NP_resultados$texto =='www.nead.unama.br'] <- 'NP00O00'
+NP_resultados$grupo[NP_resultados$texto =='Vila-Real'] <- 'NP00G00'
+NP_resultados$grupo[NP_resultados$texto =="Castro-d'Aire"] <- 'NP00G00'
+NP_resultados$grupo[NP_resultados$texto =='Está'] <- 'NP00V00'
+NP_resultados$grupo[NP_resultados$texto =='Joaquina'] <- 'NP00SP0'
+NP_resultados$texto[NP_resultados$texto =='D._Rita'] <- 'Rita'
+NP_resultados$texto[NP_resultados$texto =='Simão'] <- 'Simão_Botelho'
+NP_resultados$texto[NP_resultados$texto =='Baltasar'] <- 'Baltasar_Coutinho'
+NP_resultados$texto[NP_resultados$texto =='Botelho'] <- 'Simão_Botelho'
+NP_resultados$texto[NP_resultados$texto =='João'] <- 'João_de_a_Cruz'
+NP_resultados$texto[NP_resultados$texto =='senhor_Simão'] <- 'Simão_Botelho'
+NP_resultados$texto[NP_resultados$texto =='Tadeu'] <- 'Tadeu_de_Albuquerque'
+
+
+table(NP_resultados$grupo)
+```
+
+```{r, message=FALSE}
+
+locais <- NP_resultados %>% select(freq, texto, grupo) %>% 
+                            group_by(texto, grupo) %>% 
+                            summarise(freq=sum(freq)) %>% 
+                            filter(grupo == 'NP00G00' & freq >= 10)
+#sum(locais$freq)
+perc <- round(locais$freq /sum(locais$freq) * 100, 2)
+locais$perc <- perc
+
+ggplot(locais, aes(x=reorder(as.factor(texto), -freq), y = freq, fill=as.factor(texto)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((perc),"%")), vjust=1.5, colour='white') +      
+      geom_text(aes(label = freq), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do grupo classificado como Locais (n = 229)",
+      x = 'Locais',
+      y = 'Frequência') 
+
+```
+
+```{r, message=FALSE}
+
+org <- NP_resultados %>% select(freq, texto, grupo) %>% 
+                         group_by(texto, grupo) %>% 
+                         summarise(freq=sum(freq)) %>% 
+                         filter(grupo == 'NP00O00' & freq >= 10)
+#sum(org$freq)
+perc <- round(org$freq /sum(org$freq) * 100, 2)
+org$perc <- perc
+
+ggplot(org, aes(x=reorder(as.factor(texto), -freq), y = freq, fill=as.factor(texto)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((perc),"%")), vjust=1.5, colour='white') +      
+      geom_text(aes(label = freq), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do grupo classificado como Organizações (n = 97)",
+      x = 'Organizações',
+      y = 'Frequência') 
+
+```
+
+```{r, message=FALSE}
+
+pers <- NP_resultados %>% select(freq, texto, grupo) %>% 
+                          group_by(texto, grupo) %>% 
+                          summarise(freq=sum(freq)) %>% 
+                          filter(grupo == 'NP00SP0' & freq >= 10)
+
+#sum(pers$freq)
+perc <- round(pers$freq /sum(pers$freq) * 100, 2)
+pers$perc <- perc
+
+ggplot(pers, aes(x=reorder(as.factor(texto), -freq), y = freq, fill=as.factor(texto)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((perc),"%")), vjust=1.5, colour='white') +      
+      geom_text(aes(label = freq), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do grupo classificado como Pessoas (n = 1053)",
+      x = 'Pessoas',
+      y = 'Frequência') 
+
+```
+
+```{r, message=FALSE}
+
+outros <- NP_resultados %>% select(freq, texto, grupo) %>% 
+                            group_by(texto, grupo) %>% 
+                            summarise(freq=sum(freq)) %>% 
+                            filter(grupo == 'NP00V00' & freq >= 10)
+#sum(outros$freq)
+perc <- round(outros$freq /sum(outros$freq) * 100, 2)
+outros$perc <- perc
+
+ggplot(outros, aes(x=reorder(as.factor(texto), -freq), y = freq, fill=as.factor(texto)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((perc),"%")), vjust=1.5, colour='white') +      
+      geom_text(aes(label = freq), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do grupo classificado como Outros (n = 952)",
+      x = 'Outros',
+      y = 'Frequência') 
+
+```
