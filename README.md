@@ -19,7 +19,7 @@
 - Por fim, utilizando o Google sheets, dividi o texto em colunas e usei como separador os espaços em branco conseguindo assim deixar o resultado final em 4 colunas.
 
 ## 27/03
-- Utilizando o *software R* criei gráficos de barras com as inforações do arquivo **NP_resultados.csv**.
+- Utilizando o *software R* criei gráficos de barras com as informações do arquivo **NP_resultados.csv**.
 - Foram criados 4 gráficos de barras, um para cada tipo de entidade nomeada, adicionei também a frequência realtiva (%) aos gráficos.
 - Para a criação dos gráficos de barras, considerei apenas palvras com 10 ocorrências ou mais.
 - Alguns grupos de palavras não foram agrupadas nas entidades nomeadas corretamente, então para que não houvesse perda de dados fiz a etiquetação correta em cada grupo.
