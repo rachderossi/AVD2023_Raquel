@@ -26,6 +26,7 @@
 - O script da criação das visualizações se encontra no arquivo **amor_viz.Rmd**.
 
 ## 03/04
-- Com o linguakit, utilizei o parâmetro *seg* para fazer a segmentação de frases **linguakit seg pt Camilo-Amor_de_Perdicao.txt**,  que retornou uma frase por linha. E o parâmetro *sent* para fazer a análise de sentimento de cada frase ***linguakit sent pt Camilo-Amor_de_Perdicao.csv**.
+- Com o linguakit, utilizei o parâmetro *seg* para fazer a segmentação de frases **linguakit seg pt Camilo-Amor_de_Perdicao.txt**,  que retornou uma frase por linha. E o parâmetro *sent* para fazer a análise de sentimento de cada frase **linguakit sent pt Camilo-Amor_de_Perdicao.csv**.
 - Inclui na base de dados uma coluna com a informação do capítulo do livro, isso foi feito a partir da filtragem pelo número da linha que contnha a palavra CAPÍTULO. Escolhi os três primeiros capítulos.
-
+- Com a base de dados completa (capítulos, texto e sentimento), construi gráficos de barras e nuvem de palavras para cada capítulo.
+- O script da criação das visualizações se encontra no arquivo **viz_capitulos.Rmd**.
