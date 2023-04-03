@@ -24,3 +24,8 @@
 - Para a criação dos gráficos de barras, considerei apenas palvras com 10 ocorrências ou mais.
 - Alguns grupos de palavras não foram agrupadas nas entidades nomeadas corretamente, então para que não houvesse perda de dados fiz a etiquetação correta em cada grupo.
 - O script da criação das visualizações se encontra no arquivo **amor_viz.Rmd**.
+
+## 03/04
+- Com o linguakit, utilizei o parâmetro *seg* para fazer a segmentação de frases **linguakit seg pt Camilo-Amor_de_Perdicao.txt**,  que retornou uma frase por linha. E o parâmetro *sent* para fazer a análise de sentimento de cada frase ***linguakit sent pt Camilo-Amor_de_Perdicao.csv**.
+- Inclui na base de dados uma coluna com a informação do capítulo do livro, isso foi feito a partir da filtragem pelo número da linha que contnha a palavra CAPÍTULO. Escolhi os três primeiros capítulos.
+
