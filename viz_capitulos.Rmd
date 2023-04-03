@@ -1,0 +1,424 @@
+---
+title: "viz_capitulos"
+author: "Raquel Rossi"
+date: "2023-04-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyverse)
+library(scales)
+library(hrbrthemes)
+library(DT)
+library(tm) 
+library(wesanderson)
+library(wordcloud)
+
+```
+
+
+Com o linguakit utilizei o parâmetro **seg** para fazer a segmentação de frases. O que retornou uma frase por linha. E o parâmetro **sent** para fazer a análise de sentimento de cada frase.
+
+
+Inclui na base de dados a informação do capítulo do livro. Escolhi os três primeiros capítulos.
+
+```{r, message=FALSE, warning=FALSE}
+
+dados <- read.csv("/Users/raquelrossi/Desktop/aula6/Camilo-Amor_de_Perdicao.csv")
+
+capI <- data.frame(dados$Amor.de.Perdição[151:622])
+capI$capitulo <- NULL
+capI$capitulo <- 'CAPÍTULO I' 
+
+capI$texto <- NULL
+capI$texto <- capI$dados.Amor.de.Perdição.151.622.
+capI$dados.Amor.de.Perdição.151.622. <- NULL
+capI = capI[-1,]
+
+capII <- data.frame(dados$Amor.de.Perdição[623:981])
+capII$capitulo <- NULL
+capII$capitulo <- 'CAPÍTULO II' 
+
+capII$texto <- NULL
+capII$texto <- capII$dados.Amor.de.Perdição.623.981.
+capII$dados.Amor.de.Perdição.623.981. <- NULL
+capII = capII[-1,]
+
+
+capIII <- data.frame(dados$Amor.de.Perdição[982:1410])
+capIII$capitulo <- NULL
+capIII$capitulo <- 'CAPÍTULO III' 
+
+capIII$texto <- NULL
+capIII$texto <- capIII$dados.Amor.de.Perdição.982.1410.
+capIII$dados.Amor.de.Perdição.982.1410. <- NULL
+capIII = capIII[-1,]
+
+#df1 <- rbind(capI,capII)
+#df_final <- rbind(df1,capIII)
+
+#write.csv(capIII, "/Users/raquelrossi/Desktop/aula6/capituloIII.csv")
+```
+
+
+Com a base de dados completa (capítulos, texto e sentimento), construi gráficos de barras e nuvem de palavras para cada capítulo.
+
+
+## Gráfico de barras com informações das frequências de sentimento dos capítulos
+
+```{r, message=FALSE, warning=FALSE}
+
+capitulos <- read.csv("/Users/raquelrossi/Desktop/aula6/capitulos_sent.csv")
+
+capitulos$sentimento[capitulos$sentimento =='NONE'] <- 'Neutro'
+capitulos$sentimento[capitulos$sentimento =='POSITIVE'] <- 'Positivo'
+capitulos$sentimento[capitulos$sentimento =='NEGATIVE'] <- 'Negativo'
+
+capitulos <- capitulos %>% select(capitulo, texto, sentimento) %>% 
+                            filter(sentimento =='Neutro' | sentimento =='Positivo' | sentimento =='Negativo')
+
+ggplot(capitulos, aes(x=as.factor(sentimento), fill=as.factor(sentimento)))  + 
+      geom_bar() +
+      scale_y_continuous() +
+      geom_text(aes(y = (..count..),label =  scales::percent((..count..)/sum(..count..))),         stat="count",vjust=-1) +       
+      geom_text(stat='count', aes(label=..count..), vjust=3) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do sentimento nos três primeiros capítulos",
+      x = 'Sentimento',
+      y = 'Frequência') 
+```
+
+## Gráfico de barras com informações das frequências de sentimento do capítulo I
+
+```{r, message=FALSE, warning=FALSE}
+
+capituloI <- capitulos %>%
+select(sentimento, capitulo)  %>%
+     filter(capitulo == 'CAPÍTULO I')
+
+ggplot(capituloI, aes(x=as.factor(sentimento), fill=as.factor(sentimento)))  + 
+      geom_bar() +
+      scale_y_continuous() +
+      geom_text(aes(y = (..count..),label =  scales::percent((..count..)/sum(..count..))),         stat="count",vjust=-1) +       
+      geom_text(stat='count', aes(label=..count..), vjust=3) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do sentimento no Capítulo I",
+      x = 'Sentimento',
+      y = 'Frequência') 
+```
+
+## Gráfico de barras com informações das frequências de sentimento do capítulo II
+
+```{r, message=FALSE, warning=FALSE}
+
+capituloII <- capitulos %>%
+select(sentimento, capitulo)  %>%
+     filter(capitulo == 'CAPÍTULO II')
+
+ggplot(capituloII, aes(x=as.factor(sentimento), fill=as.factor(sentimento)))  + 
+      geom_bar() +
+      scale_y_continuous() +
+      geom_text(aes(y = (..count..),label =  scales::percent((..count..)/sum(..count..))),         stat="count",vjust=-1) +       
+      geom_text(stat='count', aes(label=..count..), vjust=3) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do sentimento no Capítulo II",
+      x = 'Sentimento',
+      y = 'Frequência') 
+
+```
+
+## Gráfico de barras com informações das frequências de sentimento do capítulo III
+
+```{r, message=FALSE, warning=FALSE}
+
+capituloIII <- capitulos %>%
+select(sentimento, capitulo)  %>%
+     filter(capitulo == 'CAPÍTULO III')
+
+ggplot(capituloIII, aes(x=as.factor(sentimento), fill=as.factor(sentimento)))  + 
+      geom_bar() +
+      scale_y_continuous() +
+      geom_text(aes(y = (..count..),label =  scales::percent((..count..)/sum(..count..))),         stat="count",vjust=-1) +       
+      geom_text(stat='count', aes(label=..count..), vjust=3) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência do sentimento no Capítulo III",
+      x = 'Sentimento',
+      y = 'Frequência') 
+
+```
+
+## Nuvem de palavras sentimento positivo do capítulo I 
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloI <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO I' & sentimento == 'Positivo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloI$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+#head(word.freq)  
+
+teste <- as.data.frame(word.freq)
+write.csv(teste, "/Users/raquelrossi/Desktop/aula6/word.capituloI.csv")
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+word_capituloI <- read_excel("/Users/raquelrossi/Desktop/aula6/word.capituloI.xlsx")
+
+wordcloud(words = word_capituloI$word, freq = word_capituloI$word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+
+```
+
+## Tabela de frequência de palavras
+
+```{r, message=FALSE}
+
+datatable(word_capituloI)
+```
+
+## Nuvem de palavras sentimento negativo do capítulo I 
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloI <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO I' & sentimento == 'Negativo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloI$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+#head(word.freq)  
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+wordcloud(words = names(word.freq), freq = word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+```
+
+## Tabela de frequência de palavras
+
+```{r, message=FALSE, warning=FALSE}
+
+words <- as.data.frame(word.freq)
+datatable(words)
+```
+
+## Nuvem de palavras sentimento positivo do capítulo II
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloII <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO II' & sentimento == 'Positivo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloII$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+#head(word.freq)  
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+wordcloud(words = names(word.freq), freq = word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+```
+
+# Tabela de frequência de palavras
+
+```{r, message=FALSE, warning=FALSE}
+
+words <- as.data.frame(word.freq)
+datatable(words)
+```
+
+## Nuvem de palavras sentimento negativo do capítulo II
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloII <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO II' & sentimento == 'Negativo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloII$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+#head(word.freq)  
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+wordcloud(words = names(word.freq), freq = word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+words <- as.data.frame(word.freq)
+datatable(words)
+```
+
+## Nuvem de palavras sentimento positivo do capítulo III
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloIII <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO III' & sentimento == 'Positivo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloIII$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+#head(word.freq)  
+
+teste <- as.data.frame(word.freq)
+write.csv(teste, "/Users/raquelrossi/Desktop/aula6/word.capituloIII.csv")
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+word_capituloIII <- read_excel("/Users/raquelrossi/Desktop/aula6/word.capituloIII.xlsx")
+
+wordcloud(words = word_capituloIII$word, freq = word_capituloIII$word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+```
+
+## Tabela de frequência de palavras
+
+```{r, message=FALSE, warning=FALSE}
+
+datatable(word_capituloIII)
+```
+
+## Nuvem de palavras sentimento negativo do capítulo III
+
+```{r, message=FALSE, warning=FALSE}
+  
+sent_capituloIII <- capitulos %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(capitulo == 'CAPÍTULO III' & sentimento == 'Negativo')
+
+word.corpus <- Corpus(VectorSource(sent_capituloIII$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c("nao", "porque", "entao", 
+    "Ref.", "that", "with", "will", "also", "i'm"))
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+###head(word.freq)  
+
+teste <- as.data.frame(word.freq)
+write.csv(teste, "/Users/raquelrossi/Desktop/aula6/word2.capituloIII.csv")
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+word2_capituloIII <- read_excel("/Users/raquelrossi/Desktop/aula6/word2.capituloIII.xlsx")
+
+wordcloud(words = word2_capituloIII$word, freq = word2_capituloIII$word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Darjeeling1"))
+```
+
+## Tabela de frequência de palavras
+
+```{r, message=FALSE, warning=FALSE}
+
+datatable(word2_capituloIII)
+```
