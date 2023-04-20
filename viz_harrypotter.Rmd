@@ -1,0 +1,74 @@
+---
+title: "viz_harrypotter"
+author: "Raquel Rossi"
+date: "2023-04-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(plotly)
+library(readr)
+library(tidyverse)
+library(scales)
+library(hrbrthemes)
+library(DT)
+library(tm) 
+library(wesanderson)
+library(wordcloud)
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+dados <- read.csv("/Users/raquelrossi/Desktop/aula7/sentlex - sentlex.csv")
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+ggplot(dados, aes(x=reorder(as.factor(capítulos), -freq_rel), y = caracteres,
+      fill=as.factor(palavras)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((freq_rel),"%")), vjust=1.5, colour="white") +      
+      geom_text(aes(label = caracteres), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência dos capítulos por caracteres (n = 478076)",
+      x = "Capítulos",
+      y = "Frequência") 
+
+```
+
+```{r, message=FALSE, warning=FALSE}
+
+ggplot(dados, aes(x=reorder(as.factor(capítulos), -freq_rel2), y =palavras, 
+      fill=as.factor(palavras)))  + 
+      geom_bar(stat = "identity") +
+      geom_text(aes(label=paste0((freq_rel2),"%")), vjust=1.5, colour="white") +      
+      geom_text(aes(label = palavras), vjust = -1) +
+      theme(legend.position="none") +
+      labs(title = "Distribuição de frequência dos capítulos por palavras (n = 82720)",
+      x = "Capítulos",
+      y = "Frequência") 
+
+```
+
+
+```{r, message=FALSE, warning=FALSE}
+
+p <- ggplot(dados, aes(x=reorder(as.factor(capítulos), -sentimento), y = sentimento,
+     fill=as.factor(capítulos)))  + 
+     geom_bar(stat = "identity") +
+     geom_text(aes(label = sentimento, y = sentimento + 1.5), colour="white") +
+     labs(title = "Distribuição de frequência dos sentimentos por capítulos",
+          x = "Capítulos",
+          y = "Frequência sentimento",
+          fill = "Capítulos") 
+
+ggplotly(p)
+
+```
+
