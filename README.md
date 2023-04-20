@@ -30,3 +30,10 @@
 - Inclui na base de dados uma coluna com a informação do capítulo do livro, isso foi feito a partir da filtragem pelo número da linha que contnha a palavra CAPÍTULO. Escolhi os três primeiros capítulos.
 - Com a base de dados completa (capítulos, texto e sentimento), construi gráficos de barras e nuvem de palavras para cada capítulo.
 - O script da criação das visualizações se encontra no arquivo **viz_capitulos.Rmd**.
+
+## 20/04
+- Utilizando o script em python *script_sentlex.py* criado na última aula com o professor, foi gerado uma base de dados com as informações de número de caracteres, número de palavras e polarização do sentimento de cada um dos 17 capítulos do livro *harry potter e a pedra filosofal*.
+- A seguir criei duas colunas com frequências relativas do número de caracteres e do número de palavras. 
+- Foram criados 3 gráficos de barras, um para cada tipo de variável da base de dados, adicionei também a frequência realtiva (%) aos gráficos.
+- Por fim, coonforme discutido na aula anterior realizei uma análise de cluster para classificar os capítulos em grupos com similaridades utilizando o método de clusterização *K-means*.
+- O script da criação das visualizações se encontra no arquivo **viz_harrypotter.Rmd** e o gráfico de clusterização em **cluster.R**.
