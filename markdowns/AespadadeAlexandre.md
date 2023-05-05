@@ -3,7 +3,9 @@ title: "A espada de Alexandre"
 author: "Camilo Castelo Branco"
 date: "1872"
 type: "Romance"
-output: html_document
+structure: "texto, notas"
+revision: "Raquel Rossi Ferreira"
+
 ---
 
 ## CARTA AO MEU VISINHO RAIMUNDO,
