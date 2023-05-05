@@ -3,7 +3,9 @@ title: "A senhora Rattazzi"
 author: "Camilo Castelo Branco"
 date: "1880"
 type: "Romance"
-output: html_document
+structure: "preambulo, texto, notas"
+revision: "Raquel Rossi Ferreira"
+
 ---
 
 ## PREAMBULO
