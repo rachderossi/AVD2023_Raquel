@@ -1,4 +1,4 @@
-# AVD2023_Raquel
+# Diário de bordo da disciplina
 
 ## 20/02
 - Na pasta **crawlercamilo** criei um script Python que faz a extração automática das 54 obras de Camilo Castelo Branco.
