@@ -1,0 +1,147 @@
+---
+title: "Obras_Camilo"
+author: "Raquel Rossi"
+date: "2023-06-01"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+
+knitr::opts_chunk$set(echo = TRUE)
+
+library(readxl)
+library(dplyr)
+library(ggplot2)
+library(readr)
+library(tidyverse)
+library(scales)
+library(hrbrthemes)
+library(DT)
+library(tm) 
+library(wesanderson)
+library(wordcloud)
+library(factoextra)
+```
+
+# Análise de cluster
+```{r}
+
+# Na análise cluster K-means cada observação pertence ao grupo mais próximo da média. 
+
+# classificar os objetos em grupos
+# objetos dentro do mesmo grupo sejam mais similares
+# grupos sejam mais diferentes
+
+#dados_gratidao<- read_csv("a_gratidao_sent - sentimento_pond.csv")
+dados_gratidao<- read_csv("fazem_mulheres_sent - sent_pond.csv")
+
+# selecionando apenas as colunas que irão nos ajudar a defnir os grupos
+dados2 <- dados_gratidao %>% select(palavras, sent_pond)
+
+# o escalonamento dos dados nos ajuda a padronizar os dados de modo que cada variável 
+# apresente média zero e variância unitária.
+df=scale(dados2)
+
+
+# gráfico para nos ajudar a definir o número de clusters
+
+# utilizando a noção da soma dos quadrados intra cluster é possível verificar que o 
+# número ótimo de clusters para a amostra é 4. Isto porque novos clusters acima de 4 possuem
+# baixo ganho para aumentar a diferenciação dos demais.
+fviz_nbclust(df, kmeans, method = "wss")
+
+# clusterização k-means
+set.seed(123)
+km.res=kmeans(df, 4, nstart=3)
+print(km.res)
+
+
+# verificando características de cada aglomeração
+aggregate(dados2, by=list(cluster=km.res$cluster), mean)
+
+# informações dos clusters calculados
+cluster=cbind(dados2, cluster=km.res$cluster)
+head(cluster)
+
+# distância dos centros
+km.res$centers
+
+
+# cluster plot
+fviz_cluster(km.res, data=cluster,
+             palette = c("#2E9FDF", "#00AFBB", "#E7B800", "#FC4E07"),
+             ellipse.type="euclid",
+             star.plot=TRUE,
+             repel=TRUE,
+             ggtheme=theme_minimal()
+)
+
+```
+
+# Teste ANOVA 
+```{r}
+#dados <- read_csv("fazem_mulheres_sentlex.csv")
+dados <- read_csv("a_gratidao_sentlex.csv")
+
+modelo <- aov(palavras ~ sentimento, data = dados)
+summary(modelo)
+
+# H0: As médias são iguais
+# H1: As médias são diferentes
+TukeyHSD(modelo)
+
+# p-valor menor que 0.05 rejeita-se a hipótese H0 de que as médias são iguais, há diferença entre os tipos de sentimento e a quantidade de palavras.
+
+# teste de normalidade dos dados
+# H0: Os dados seguem a distribuição normal
+# H1: Os dados não seguem a distribuição normal
+
+shapiro.test(resid(modelo))
+# nesse caso rejeita-se a hipótese nula, os dados não seguem uma distribuição normal
+```
+
+# Como os dados não passaram nas premissas do teste ANOVA, irei criar um gráfico do tipo boxplot
+```{r}
+
+p <- ggplot(dados, aes(x=as.factor(sentimento), y=palavras, fill=as.factor(sentimento))) + 
+    geom_boxplot() +
+  scale_fill_manual(values = c("#2b3a55", "#ce7777")) +
+      labs(
+      x = 'Sentimento',
+      y = 'Palavras') 
+
+p + guides(fill=guide_legend(title="Sentimento"))
+```
+
+# Nuvem de palavras filtrado pelo tipo de sentimento 
+```{r, message=FALSE, warning=FALSE}
+
+dados <- read_csv("a_gratidao_sent.csv")
+
+sent_dados <- dados %>%
+select(capitulo, texto, sentimento)  %>%
+     filter(sentimento == 'Positivo')
+
+word.corpus <- Corpus(VectorSource(sent_dados$texto))
+
+word.corpus<-word.corpus%>%
+  tm_map(removePunctuation)%>% ##eliminar pontuacao
+  tm_map(removeNumbers)%>% #sem numeros
+  tm_map(stripWhitespace)# sem espaco
+
+word.corpus<-word.corpus%>%
+  tm_map(tolower)%>% 
+  tm_map(removeWords, stopwords("por"))
+
+word.corpus <- tm_map(word.corpus, removeWords, c('de', 'a', 'o', 'que', 'e', 'do', 'da', 'em', 'um', 'para', 'é', 'com', 'não', 'uma', 'os', 'no', 'se', 'na', 'por', 'mais', 'as', 'dos', 'como', 'mas', 'foi', 'ao', 'ele', 'das', 'tem', 'à', 'seu', 'sua', 'ou', 'ser', 'quando', 'muito', 'há', 'nos', 'já', 'está', 'eu', 'também', 'só', 'pelo', 'pela', 'até', 'isso', 'ela', 'entre', 'era', 'depois', 'sem', 'mesmo', 'aos', 'ter', 'seus', 'quem', 'nas', 'me', 'esse', 'eles', 'estão', 'você', 'tinha', 'foram', 'essa', 'num', 'nem', 'suas', 'meu', 'às', 'minha', 'têm', 'numa', 'pelos', 'elas', 'havia', 'seja', 'qual', 'será', 'nós', 'tenho', 'lhe', 'deles', 'essas', 'esses', 'pelas', 'este', 'fosse', 'dele', 'tu', 'te', 'vocês', 'vos', 'lhes', 'meus', 'minhas', 'teu', 'tua', 'teus', 'tuas', 'nosso', 'nossa', 'nossos', 'nossas', 'dela', 'delas', 'esta', 'estes', 'estas', 'aquele', 'aquela', 'aqueles', 'aquelas', 'isto', 'aquilo', 'estou', 'está', 'estamos', 'estão', 'estive', 'esteve', 'estivemos', 'estiveram', 'estava', 'estávamos', 'estavam', 'estivera', 'estivéramos', 'esteja', 'estejamos', 'estejam', 'estivesse', 'estivéssemos', 'estivessem', 'estiver', 'estivermos', 'estiverem', 'hei', 'há', 'havemos', 'hão', 'houve', 'houvemos', 'houveram', 'houvera', 'houvéramos', 'haja', 'hajamos', 'hajam', 'houvesse', 'houvéssemos', 'houvessem', 'houver', 'houvermos', 'houverem', 'houverei', 'houverá', 'houveremos', 'houverão', 'houveria', 'houveríamos', 'houveriam', 'sou', 'somos', 'são', 'era', 'éramos', 'eram', 'fui', 'foi', 'fomos', 'foram', 'fora', 'fôramos', 'seja', 'sejamos', 'sejam', 'fosse', 'fôssemos', 'fossem', 'for', 'formos', 'forem', 'serei', 'será'))
+
+
+word.corpus <- tm_map(word.corpus, stemDocument)
+
+word.counts <- as.matrix(TermDocumentMatrix(word.corpus))
+word.freq <- sort(rowSums(word.counts), decreasing = TRUE)
+# head(word.freq)  
+
+wordcloud(words = names(word.freq), freq = word.freq, scale = c(4, 0.3), 
+    max.words = 100,random.order = FALSE, color = wes_palette("Royal1"))
+```
