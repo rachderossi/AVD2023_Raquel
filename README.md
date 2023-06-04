@@ -39,5 +39,5 @@
 - O script da criação das visualizações se encontra no arquivo **viz_harrypotter.Rmd** e o gráfico de clusterização em **cluster.R**.
 
 ## 01/06 - Relatório Obras de Camilo Castelo Branco
-- Criação de uma análise de cluster para classificar os capítulos em grupos com similaridades utilizando o método de clusterização *K-means*, nesse arquivo também se encontra o teste ANOVA para o teste de correlação entre as palavras e o tipo de sentimento e a criação da nuvem de palavras. O script se chama **Obras_Camilo.Rmd**
+- Criação de uma análise de cluster para classificar os capítulos em grupos com similaridades utilizando o método de clusterização *K-means*, nesse arquivo também se encontra o *teste ANOVA* para o teste de correlação entre as palavras e o tipo de sentimento, e a criação da nuvem de palavras. O script se chama **Obras_Camilo.Rmd**.
 - Link para a base de dados utilizadas no relatório: https://drive.google.com/drive/folders/17o--tfkeylB5H-a4-8d2ziaDkqedNltc?usp=share_link
